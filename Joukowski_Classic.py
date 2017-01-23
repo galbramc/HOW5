@@ -163,24 +163,25 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     assert(ref <= refmax)
     
     nchord=8*2**refmax           # number of elements along one side of the airfoil geometry
-    nxwake=16*2**refmax           # x-wake on centerline
+    nxwake=16*2**refmax          # x-wake on centerline
     nnormal=16*2**refmax         # points normal to airfoil surface
     
     # Trailing edge spacing
     if (reynolds > 5e5):
         # Turbulent. 
-        AR = 50
-        ds0 = 2.5
-        dds0 = 0.0
-        ds1 = 0.175
-        dds1 = 2.0
+        AR = 25
+#         ds0 = 2.5
+#         dds0 = 0.0
+#         ds1 = 0.175
+#         dds1 = 2.0
     else:
         # Laminar.  
         AR = 1
-        ds0 = 2.5
-        dds0 = 0.0
-        ds1 = 0.175
-        dds1 = 2.0
+    
+    ds0 = 2 #2.5
+    dds0 = 0.0
+    ds1 = 0.175
+    dds1 = 2.0
 
     # Chord distribution
     #phi = np.linspace(np.pi, 0.0, nchord+1)
@@ -251,9 +252,9 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     #left[1] = joukowski_inverse(left[1], left[0], joux)[0]
 
     # Find parameters for straight vertical outflow boundary
-    xright = joukowski_conformal(sx[-1], 0.0, joux)[0]
-    yright = ly0 * -joukowski_conformal(0.0*sy[-1], sy[-1], joux)[0]
-    right = joukowski_inverse(xright + 0*sy, yright, joux)
+    xright    = joukowski_conformal(sx[-1], 0.0, joux)[0]
+    yright    = ly0 * -joukowski_conformal(0.0*sy[-1], sy[-1], joux)[0]
+    right     = joukowski_inverse(xright + 0*sy, yright, joux)
     right_eps = joukowski_inverse(xright, yright[-1] - 1e-5, joux)
 
     # Top boundary
@@ -266,13 +267,13 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     # Some smoothing, but smoothing removes grid nesting
     #for i in range(1000): # empirical
     #    lxtop[1:-1] = (lxtop[0:-2] + lxtop[2:]) / 2.0
-    lxtop = np.linspace(0, lxtop[-1], lxtop.shape[0]) # straight
+    lxtop  = np.linspace(0, lxtop[-1], lxtop.shape[0]) # straight
     lxtop1 = -2 * lxtop**3 + 3 * lxtop**2
     # Make orthogonal to right boundary
-    #slope = (right[0][-1] - right[0][-2]) / (right[1][-1] - right[1][-2])
-    slope = (right[0][-1] - right_eps[0]) / (right[1][-1] - right_eps[1])
+    slope    = (right[0][-1] - right_eps[0]) / (right[1][-1] - right_eps[1])
+    slope    = 0 #Make the top slope downard so the boundary is always an inflow boundary
     newslope = slope * right[0][-1]
-    lxtop2 = lxtop**3 - lxtop**2
+    lxtop2   = lxtop**3 - lxtop**2
     top = [lxtop * right[0][-1], \
            left[1][-1]*(1-lxtop1) + right[1][-1]*lxtop1 - newslope*lxtop2]
     
@@ -316,4 +317,4 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
 
 if __name__ == "__main__":
     X, Y = make_joukowski_classic(3, 1, 1.e6)
-    #meshplot(X, Y)
+    meshplot(X, Y)

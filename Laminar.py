@@ -12,7 +12,7 @@ refmax = 5
 TriFlag=False
 
 #Used to specify the file format to dump. See Joukowski.make_joukowski for details
-FileFormat="gmsh2"
+FileFormat="gmsh"
 
 #Grid distrubution, "Classic" or "Challenge"
 Distribution = "Classic"
