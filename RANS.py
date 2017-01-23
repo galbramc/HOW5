@@ -12,10 +12,10 @@ refmax = 5
 TriFlag=False
 
 #Used to specify the file format to dump. See Joukowski.make_joukowski for details
-FileFormat="msh"
+FileFormat="gmsh"
 
 #Grid distrubution, "Classic" or "Challenge"
-Distribution = "Challenge"
+Distribution = "Classic"
 
 for ref in xrange(refmin,refmax+1):
     make_joukowski(ref, Q, TriFlag, Distribution, FileFormat, reynolds=1.e6,

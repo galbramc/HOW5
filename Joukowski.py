@@ -94,8 +94,8 @@ def make_joukowski(ref, Q, TriFlag, Distribution, FileFormat, reynolds, filename
     if FileFormat == 'fec':
         writeVTK(filename_base, ref, Q, E, V);
         writeFEC(filename_base, ref, Q, E, V, nLE, NC, nWK, nWB, nr);
-    if FileFormat == 'msh':
-        writeGMSH(filename_base, ref, Q, TriFlag, E, V, nLE, NC, nWK, nWB, nr);
+    if FileFormat == 'msh' or FileFormat == 'gmsh':
+        writeGMSH(filename_base, FileFormat, ref, Q, TriFlag, E, V, nLE, NC, nWK, nWB, nr);
 
     print("Done with refinement " + str(ref))
     

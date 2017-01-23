@@ -1,9 +1,9 @@
 from __future__ import division
 
 #===============================================================================
-def writeGMSH(filename_base, ref, Q, TriFlag, E, V, nLE, NC, nWK, nWB, nr):
+def writeGMSH(filename_base, ext, ref, Q, TriFlag, E, V, nLE, NC, nWK, nWB, nr):
 
-    filename = filename_base + '_ref'+str(ref)+ '_Q'+str(Q)+'.msh'
+    filename = filename_base + '_ref'+str(ref)+ '_Q'+str(Q)+'.'+ext
     print 'Writing ', filename
     f = open(filename, 'w')
 
@@ -94,8 +94,8 @@ def writeGMSH(filename_base, ref, Q, TriFlag, E, V, nLE, NC, nWK, nWB, nr):
     f.write('4\n')
     f.write('2 0 \"MeshInterior\"\n')
     f.write('1 1 \"Wall\"\n')
-    f.write('1 2 \"Farfield Inflow\"\n')
-    f.write('1 3 \"Farfield Outflow\"\n')
+    f.write('1 2 \"Farfield_Inflow\"\n')
+    f.write('1 3 \"Farfield_Outflow\"\n')
     f.write('$EndPhysicalNames\n')
     
     
