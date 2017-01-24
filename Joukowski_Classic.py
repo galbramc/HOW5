@@ -73,8 +73,23 @@ def Bezier(nn, smax=1, ds0=0.2, dds0=0, ds1=0.2, dds1=0):
 def meshplot(X, Y, edgecolor='k'):
     """Plot a mapped Cartesian grid."""
     plt.clf()
+    
+    plt.subplot(2,2,1)
     plt.axis('equal')
     plt.pcolor(X, Y, 0*X, edgecolor=edgecolor, cmap='Greens')
+
+    plt.subplot(2,2,2)
+    plt.axis('equal')
+    plt.pcolor(X, Y, 0*X, edgecolor=edgecolor, cmap='Greens')
+    plt.xlim([-0.005, 0.005])
+    plt.ylim([-0.005, 0.005])
+
+    plt.subplot(2,2,3)
+    plt.axis('equal')
+    plt.pcolor(X, Y, 0*X, edgecolor=edgecolor, cmap='Greens')
+    plt.xlim([0.995, 1.005])
+    plt.ylim([-0.005, 0.005])
+
     plt.show()
     plt.draw()
 
@@ -169,19 +184,18 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     # Trailing edge spacing
     if (reynolds > 5e5):
         # Turbulent. 
-        AR = 25
-#         ds0 = 2.5
-#         dds0 = 0.0
-#         ds1 = 0.175
-#         dds1 = 2.0
+        AR = 50
+        ds0 = 2.5
+        dds0 = 0.1
+        ds1 = 0.5
+        dds1 = 0.2
     else:
         # Laminar.  
         AR = 1
-    
-    ds0 = 2 #2.5
-    dds0 = 0.0
-    ds1 = 0.175
-    dds1 = 2.0
+        ds0 = 2
+        dds0 = 0.0
+        ds1 = 0.175
+        dds1 = 2.0
 
     # Chord distribution
     #phi = np.linspace(np.pi, 0.0, nchord+1)
@@ -316,5 +330,5 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
     return X, Y
 
 if __name__ == "__main__":
-    X, Y = make_joukowski_classic(3, 1, 1.e6)
+    X, Y = make_joukowski_classic(4, 1, 1.e6)
     meshplot(X, Y)
