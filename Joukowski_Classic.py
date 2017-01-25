@@ -189,7 +189,15 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
         ds0 = 1
         dds0 = 0
         ds1 = 0.5
-        dds1 = 1
+        dds1 = 10
+        
+        # Chord distribution
+        #phi = np.linspace(np.pi, 0.0, nchord+1)
+        #sAf = (np.cos(phi) + 1) / 2
+        phi = Bezier(nchord,ds0=ds0,dds0=dds0,ds1=ds1,dds1=dds1)
+        sAf = (1 - np.cos(np.pi*phi)) / 2
+        #sAf = phi
+
     else:
         nchord=8*2**refmax           # number of elements along one side of the airfoil geometry
         nxwake=16*2**refmax          # x-wake on centerline
@@ -197,17 +205,17 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
 
         # Laminar.  
         AR = 1
-        ds0 = 1
+        ds0 = 0
         dds0 = 0
-        ds1 = .5
-        dds1 = 1
+        ds1 = 0
+        dds1 = 10
 
-    # Chord distribution
-    #phi = np.linspace(np.pi, 0.0, nchord+1)
-    #sAf = (np.cos(phi) + 1) / 2
-    phi = Bezier(nchord,ds0=ds0,dds0=dds0,ds1=ds1,dds1=dds1)
-    sAf = (1 - np.cos(np.pi*phi)) / 2
-    #sAf = phi
+        # Chord distribution
+        #phi = np.linspace(np.pi, 0.0, nchord+1)
+        #sAf = (np.cos(phi) + 1) / 2
+        phi = Bezier(nchord,ds0=ds0,dds0=dds0,ds1=ds1,dds1=dds1)
+        #sAf = (1 - np.cos(np.pi*phi)) / 2
+        sAf = phi
 
     sAf_half = 1-sAf[:nchord/2-1:-1]
     
@@ -335,5 +343,5 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
     return X, Y
 
 if __name__ == "__main__":
-    X, Y = make_joukowski_classic(2, 1, 1.e6)
+    X, Y = make_joukowski_classic(4, 1, 1.e3)
     meshplot(X, Y)
