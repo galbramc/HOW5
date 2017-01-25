@@ -177,19 +177,24 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     refmax = 6
     assert(ref <= refmax)
     
-    nchord=8*2**refmax           # number of elements along one side of the airfoil geometry
-    nxwake=16*2**refmax          # x-wake on centerline
-    nnormal=8*2**refmax          # points normal to airfoil surface
     
     # Trailing edge spacing
     if (reynolds > 5e5):
+        nchord=8*2**refmax           # number of elements along one side of the airfoil geometry
+        nxwake=16*2**refmax          # x-wake on centerline
+        nnormal=16*2**refmax         # points normal to airfoil surface
+
         # Turbulent. 
         AR = 50
-        ds0 = 2.5
-        dds0 = 0.1
-        ds1 = 0.1
+        ds0 = 1
+        dds0 = 0
+        ds1 = 0.5
         dds1 = 1
     else:
+        nchord=8*2**refmax           # number of elements along one side of the airfoil geometry
+        nxwake=16*2**refmax          # x-wake on centerline
+        nnormal=8*2**refmax          # points normal to airfoil surface
+
         # Laminar.  
         AR = 1
         ds0 = 1
@@ -213,7 +218,6 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     sx[nchord:nchord+len(sAf_half)] = 1+sAf_half
     nWake = nxwake+1-len(sAf_half)
     ratio = FindStretching(nWake, ds, np.sqrt((R + 1+sAf_half[-1]))-(1+sAf_half[-1]))
-    print ratio
     for i in xrange(1,nWake+1):
         sx[nchord+len(sAf_half)+i-1] = 1+sAf_half[-1] + Distance(i, ds, ratio)
 
@@ -233,8 +237,6 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     ds = sy[len(sAf_half)-1] - sy[len(sAf_half)-2]
     nNormal = nnormal+1-len(sAf_half)
     ratio = FindStretching(nNormal, ds, np.sqrt(R)-sy_Af)
-    print sy_Af, np.sqrt(R)-sy_Af, ratio
-    print ds
     for i in xrange(nNormal+1):
         sy[len(sAf_half)+i-1] = sy_Af + Distance(i, ds, ratio)
 
@@ -325,7 +327,7 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
     S, T = joukowski_parameter(ref, Q, reynolds)
     X, Y = joukowski_conformal(S, T)
     
-    meshplot(S, T)
+    #meshplot(S, T)
     
     X = np.concatenate(( np.flipud(np.delete(X, 0, axis=0)), X), axis=0)
     Y = np.concatenate((-np.flipud(np.delete(Y, 0, axis=0)), Y), axis=0)
@@ -333,5 +335,5 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
     return X, Y
 
 if __name__ == "__main__":
-    X, Y = make_joukowski_classic(2, 1, 1.e3)
+    X, Y = make_joukowski_classic(2, 1, 1.e6)
     meshplot(X, Y)
