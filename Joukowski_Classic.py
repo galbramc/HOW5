@@ -179,7 +179,7 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     
     nchord=8*2**refmax           # number of elements along one side of the airfoil geometry
     nxwake=16*2**refmax          # x-wake on centerline
-    nnormal=16*2**refmax         # points normal to airfoil surface
+    nnormal=8*2**refmax          # points normal to airfoil surface
     
     # Trailing edge spacing
     if (reynolds > 5e5):
@@ -187,21 +187,22 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
         AR = 50
         ds0 = 2.5
         dds0 = 0.1
-        ds1 = 0.5
-        dds1 = 0.2
+        ds1 = 0.1
+        dds1 = 1
     else:
         # Laminar.  
         AR = 1
-        ds0 = 2
-        dds0 = 0.0
-        ds1 = 0.175
-        dds1 = 2.0
+        ds0 = 1
+        dds0 = 0
+        ds1 = .5
+        dds1 = 1
 
     # Chord distribution
     #phi = np.linspace(np.pi, 0.0, nchord+1)
     #sAf = (np.cos(phi) + 1) / 2
     phi = Bezier(nchord,ds0=ds0,dds0=dds0,ds1=ds1,dds1=dds1)
     sAf = (1 - np.cos(np.pi*phi)) / 2
+    #sAf = phi
 
     sAf_half = 1-sAf[:nchord/2-1:-1]
     
@@ -212,6 +213,7 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     sx[nchord:nchord+len(sAf_half)] = 1+sAf_half
     nWake = nxwake+1-len(sAf_half)
     ratio = FindStretching(nWake, ds, np.sqrt((R + 1+sAf_half[-1]))-(1+sAf_half[-1]))
+    print ratio
     for i in xrange(1,nWake+1):
         sx[nchord+len(sAf_half)+i-1] = 1+sAf_half[-1] + Distance(i, ds, ratio)
 
@@ -231,6 +233,8 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     ds = sy[len(sAf_half)-1] - sy[len(sAf_half)-2]
     nNormal = nnormal+1-len(sAf_half)
     ratio = FindStretching(nNormal, ds, np.sqrt(R)-sy_Af)
+    print sy_Af, np.sqrt(R)-sy_Af, ratio
+    print ds
     for i in xrange(nNormal+1):
         sy[len(sAf_half)+i-1] = sy_Af + Distance(i, ds, ratio)
 
@@ -242,7 +246,6 @@ def joukowski_parameter(ref, Q, reynolds, growth=1.3, R=100, joux=0.1):
     #growth_normal = 1.0 + (growth - 1.0) / 2.0  # empirical
     #while sy[-1]**2 < R/1.5:
     #    sy = np.append(sy, sy[-1] + growth_normal * (sy[-1] - sy[-2]))
-
 
     lx0 = sx / sx.max()
     ly0 = sy / sy.max()
@@ -322,7 +325,7 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
     S, T = joukowski_parameter(ref, Q, reynolds)
     X, Y = joukowski_conformal(S, T)
     
-    #meshplot(S, T)
+    meshplot(S, T)
     
     X = np.concatenate(( np.flipud(np.delete(X, 0, axis=0)), X), axis=0)
     Y = np.concatenate((-np.flipud(np.delete(Y, 0, axis=0)), Y), axis=0)
@@ -330,5 +333,5 @@ def make_joukowski_classic(ref, Q, reynolds=1.e6):
     return X, Y
 
 if __name__ == "__main__":
-    X, Y = make_joukowski_classic(4, 1, 1.e6)
+    X, Y = make_joukowski_classic(2, 1, 1.e3)
     meshplot(X, Y)
